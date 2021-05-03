@@ -1,0 +1,8 @@
+[YOUTUBE]
+API_KEY =
+YEAR =
+MONTH =
+
+[CSV]
+INPUT = input.csv
+OUTPUT = output/{}_{}.csv
