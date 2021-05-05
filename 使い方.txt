@@ -1,0 +1,24 @@
+【導入手順】
+①以下のURLからpython3.9をインストール
+  https://www.python.org/downloads/
+②pipenv install
+③python main.py
+④outputディレクトリの下にcsvファイルが作成されている
+
+【CSVの作成方法】
+cd /Users/takahashikatsuya/Downloads/かつや
+pipenv shell
+python main.py
+
+
+【出力する月の変更方法】
+config.iniの「year」「Month」を変更する
+
+【出力するチャンネルの変更方法】
+Input.csvの「チャンネル名」と「チャンネルID」に登録する
+
+【スプレッドシートへのインポート方法】
+①ファイル>インポートを選択
+②アップロードで作成したCSVをインポート
+③一行目を選択肢、スプレッドシートのツールメニューバーから「フィルター」を選択
+④「公開日時」の列を「A→Zで並び替え」で並び替えを行う

@@ -1,4 +1,6 @@
 output/*.csv
 input.csv
 config.ini
-input.csv
+
+.idea
+*.pyc

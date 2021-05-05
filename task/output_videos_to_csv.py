@@ -21,8 +21,8 @@ output_csv_path = os.path.join(BASE_DIR, config_ini.get('CSV', 'OUTPUT'))
 
 published_after, published_before = get_search_date_range()
 
-def task():
 
+def task():
     now = datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
 
     youtube_service = YoutubeService(config_ini.get('YOUTUBE', 'API_KEY'))
@@ -39,7 +39,9 @@ def create_csv_channel_videos(youtube_service, row, now):
 
         videos = youtube_service.search_videos(row['チャンネルID'], published_after, published_before)
 
-        for video in videos:
+        sorted_videos = sorted(videos, key=lambda x: x['snippet']['publishedAt'])
+
+        for video in sorted_videos:
             video_detail = youtube_service.get_videos_detail(video['id']['videoId'])
 
             video_information = VideoInformation(
@@ -59,8 +61,17 @@ class VideoInformation:
         self.duration = duration
 
     @property
+    def title(self):
+        return f'{self._title} {self.duration}'
+
+    @title.setter
+    def title(self, value):
+        self._title = value
+
+    @property
     def published_at(self):
-        return iso_to_jstdt(self._published_at)
+        published_at = iso_to_jstdt(self._published_at)
+        return f'{published_at.month}/{published_at.day}'
 
     @published_at.setter
     def published_at(self, value):
@@ -75,17 +86,24 @@ class VideoInformation:
     def duration(self, duration):
         self._duration = duration
 
-    def is_long(self):
-        duration = list(map(int, self.duration.split(':')))
-        minutes = duration[-2]
-        seconds = duration[-1]
-        if minutes < 7:
-            return
-        if minutes == 7 and seconds < 30:
-            return
-        return '長尺'
+    def _duration_to_seconds(self):
+        duration_list = list(map(int, self.duration.split(':')))
+        dt_duration = datetime.timedelta(minutes=duration_list[-2], seconds=duration_list[-1])
+        if len(duration_list) == 3:
+            dt_duration += datetime.timedelta(hours=duration_list[-3])
+        return dt_duration.total_seconds()
 
-    def url(self):
+    def _is_long(self):
+        duration_seconds = self._duration_to_seconds()
+        if duration_seconds < 450:
+            return '通常'
+        elif duration_seconds < 900:
+            return '長尺'
+        elif duration_seconds < 1200:
+            return '長尺2'
+        return '超大作'
+
+    def _url(self):
         return f'https://www.youtube.com/watch?v={self.video_id}'
 
     def output_row(self):
@@ -93,8 +111,8 @@ class VideoInformation:
             'タイトル': self.title,
             '公開日時': self.published_at,
             '動画時間': self.duration,
-            '長尺': self.is_long(),
-            'URL': self.url()
+            '長尺': self._is_long(),
+            'URL': self._url()
         }
 
 
