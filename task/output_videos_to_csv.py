@@ -101,7 +101,7 @@ class VideoInformation:
             return '長尺'
         elif duration_seconds < 1200:
             return '長尺2'
-        return '超大作'
+        return '長尺'
 
     def _url(self):
         return f'https://www.youtube.com/watch?v={self.video_id}'
