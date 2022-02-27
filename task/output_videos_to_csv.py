@@ -29,6 +29,7 @@ def task():
     with open(input_csv_path) as input_f:
         reader = csv.DictReader(input_f)
         for row in reader:
+            print(row)
             create_csv_channel_videos(youtube_service, row, now)
 
 
@@ -88,14 +89,19 @@ class VideoInformation:
 
     def _duration_to_seconds(self):
         duration_list = list(map(int, self.duration.split(':')))
-        dt_duration = datetime.timedelta(minutes=duration_list[-2], seconds=duration_list[-1])
-        if len(duration_list) == 3:
-            dt_duration += datetime.timedelta(hours=duration_list[-3])
+        if len(duration_list) == 1:
+            dt_duration = datetime.timedelta(minutes=duration_list[-1])
+        else:
+            dt_duration = datetime.timedelta(minutes=duration_list[-2], seconds=duration_list[-1])
+            if len(duration_list) == 3:
+                dt_duration += datetime.timedelta(hours=duration_list[-3])
         return dt_duration.total_seconds()
 
     def _is_long(self):
         duration_seconds = self._duration_to_seconds()
-        if duration_seconds < 450:
+        if duration_seconds < 60:
+            return 'shorts'
+        elif duration_seconds < 450:
             return '通常'
         elif duration_seconds < 900:
             return '長尺'

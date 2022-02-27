@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-google-api-python-client = "==2.3.0"
+google-api-python-client = "==2.15.0"
 [dev-packages]
 
 [requires]

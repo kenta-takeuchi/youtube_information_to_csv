@@ -13,8 +13,12 @@ config_ini.read(config_ini_path, encoding='utf-8')
 def get_search_date_range():
     year = int(config_ini.get('YOUTUBE', 'YEAR'))
     month = int(config_ini.get('YOUTUBE', 'MONTH'))
+    if month == 12:
+        next_year = year + 1
+    else:
+        next_year = year
     published_after = datetime.datetime(year=year, month=month, day=1).isoformat("T") + "Z"
-    published_before = datetime.datetime(year=year, month=month + 1, day=1).isoformat("T") + "Z"
+    published_before = datetime.datetime(year=next_year, month=(month % 12) + 1, day=1).isoformat("T") + "Z"
     return published_after, published_before
 
 
