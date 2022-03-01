@@ -89,8 +89,9 @@ class VideoInformation:
 
     def _duration_to_seconds(self):
         duration_list = list(map(int, self.duration.split(':')))
+        print(f'{self.title} {duration_list}')
         if len(duration_list) == 1:
-            dt_duration = datetime.timedelta(minutes=duration_list[-1])
+            dt_duration = datetime.timedelta(seconds=duration_list[-1])
         else:
             dt_duration = datetime.timedelta(minutes=duration_list[-2], seconds=duration_list[-1])
             if len(duration_list) == 3:
